@@ -85,9 +85,9 @@ public class DavisBase {
 		System.out.println("\tCREATE INDEX ON table_name (column_name);                    Create index for the specified column in the table");
 		
 		System.out.println("\tDROP TABLE table_name;                                       Remove table data (i.e All records) and its schema.");
-		System.out.println("\tVERSION;                                                     Show the program version.");
-		System.out.println("\tHELP;                                                        Show this help information.");
-		System.out.println("\tEXIT;                                                        Exit DavisBase.");
+		System.out.println("\tVERSION;                                                     Display the program version.");
+		System.out.println("\tHELP;                                                        Display this help information.");
+		System.out.println("\tEXIT;                                                        Exit the program.");
 		System.out.println();
 		System.out.println();
 		System.out.println(line("*",82));
@@ -222,6 +222,8 @@ public class DavisBase {
 				break;
 		}
 	} 
+
+	
     public static void parseQueryString(String queryString) {
 		System.out.println("STUB: Calling the method to process the command");
 		System.out.println("Parsing the string:\"" + queryString + "\"");
