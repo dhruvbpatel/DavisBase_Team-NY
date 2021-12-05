@@ -46,7 +46,7 @@ public class DeleteTable {
 		int numPages = Table.pages(file);
 		int page = 0;
 		for(int p = 1; p <= numPages; p++)
-			if(Page.hasKey(file, p, key)&Page.getPageType(file, p)==0x0D){
+			if(Page.has_key(file, p, key)&Page.getPageType(file, p)==0x0D){
 				page = p;
 				break;
 			}

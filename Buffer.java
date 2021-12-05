@@ -3,17 +3,17 @@ import java.util.HashMap;
 class Buffer{
 	
 	public int num_row; 
-	public HashMap<Integer, String[]> content;
+	public HashMap<Integer, String[]> contents;
 	public String[] columnName; 
 	public int[] format; 
 	
 	public Buffer(){
 		num_row = 0;
-		content = new HashMap<Integer, String[]>();
+		contents = new HashMap<Integer, String[]>();
 	}
 
 	public void add_vals(int rowid, String[] val){
-		content.put(rowid, val);
+		contents.put(rowid, val);
 		num_row = num_row + 1;
 	}
 
@@ -30,7 +30,7 @@ class Buffer{
 		else{
 			for(int i = 0; i < format.length; i++)
 				format[i] = columnName[i].length();
-			for(String[] i : content.values())
+			for(String[] i : contents.values())
 				for(int j = 0; j < i.length; j++)
 					if(format[j] < i[j].length())
 						format[j] = i[j].length();
@@ -52,7 +52,7 @@ class Buffer{
 				
 				System.out.println();
 
-				for(String[] i : content.values()){
+				for(String[] i : contents.values()){
 					for(int j = 0; j < i.length; j++)
 						System.out.print(fix(format[j], i[j])+"|");
 					System.out.println();
@@ -81,7 +81,7 @@ class Buffer{
 				
 				System.out.println();
 				
-				for(String[] i : content.values()){
+				for(String[] i : contents.values()){
 					for(int j = 0; j < control.length; j++)
 						System.out.print(fix(format[control[j]], i[control[j]])+"|");
 					System.out.println();

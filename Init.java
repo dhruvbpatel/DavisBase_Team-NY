@@ -11,7 +11,7 @@ import java.util.SortedMap;
 public class Init{
 
 	
-public static int pageSize = 512;
+public static int size_of_page = 512;
 public static void init(){
 		try {
 			File dataDir = new File("data");
@@ -70,7 +70,7 @@ public static void initialize() {
 
 		try {
 			RandomAccessFile tablesCatalog = new RandomAccessFile("data/davisbase_tables.tbl", "rw");
-			tablesCatalog.setLength(pageSize);
+			tablesCatalog.setLength(size_of_page);
 			tablesCatalog.seek(0);
 			tablesCatalog.write(0x0D); 
 			tablesCatalog.writeByte(0x02); 
@@ -78,7 +78,7 @@ public static void initialize() {
 			int size1=24;
 			int size2=25;
 			
-			int offsetT=pageSize-size1;  // 512-24 = 488
+			int offsetT=size_of_page-size1;  // 512-24 = 488
 			int offsetC=offsetT-size2;	// 488-25 = 463
 			
 			tablesCatalog.writeShort(offsetC); 
@@ -109,13 +109,13 @@ public static void initialize() {
 		
 		try {
 			RandomAccessFile columnsCatalog = new RandomAccessFile("data/davisbase_columns.tbl", "rw");
-			columnsCatalog.setLength(pageSize);
+			columnsCatalog.setLength(size_of_page);
 			columnsCatalog.seek(0);       
 			columnsCatalog.writeByte(0x0D); //leaf table of b-tree
 			columnsCatalog.writeByte(0x08); //An array of 2-byte integers that indicate the page offset location of each data cell.The array size is 2n, where n is the number of cells on the page. The array ismaintained in key-sorted order—i.e. rowid order for a table file and index order for an index file.
 			
 			int[] offset=new int[10]; //[469,422,378,330,281,234,177,128]
-			offset[0]=pageSize-43; // 469
+			offset[0]=size_of_page-43; // 469
 			offset[1]=offset[0]-47;// 422
 			offset[2]=offset[1]-44;// 378
 			offset[3]=offset[2]-48;// 330
