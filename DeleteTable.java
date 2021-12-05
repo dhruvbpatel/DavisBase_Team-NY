@@ -1,11 +1,11 @@
 import java.io.RandomAccessFile;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.SortedMap;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.io.*;
 import java.util.*;
 
@@ -14,16 +14,16 @@ import java.util.*;
 
 public class DeleteTable {
 
-	
-	public static void parseDeleteString(String deleteString) {
+
+	public static void parseDeleteString(String QueryString) {
 
 		System.out.println("STUB: CALLED DELETE METHOD");
-		System.out.println("Parsing the string:\"" + deleteString + "\"");
+		System.out.println("Parsing the string:\"" + QueryString + "\"");
 		
-		String[] tokens = deleteString.split(" ");
+		String[] tokens = QueryString.split(" ");
 		String table = tokens[3];
 
-		String[] temp = deleteString.split("where");
+		String[] temp = QueryString.split("where");
 		String cmpTemp = temp[1];
 
 		String[] cmp = DavisBase.parserEquation(cmpTemp);
