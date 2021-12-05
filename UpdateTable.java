@@ -9,33 +9,33 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class UpdateTable {
-	public static void parseUpdateString(String updateString) {
-		System.out.println("UPDATE METHOD");
-		System.out.println("Parsing the string:\"" + updateString + "\"");
+	public static void parseUpdateString(String updateTheString) {
+		System.out.println("METHOD UPDATE");
+		System.out.println("string Parse:\"" + updateTheString + "\"");
 		
-		String[] tokens=updateString.split(" ");
-		String table = tokens[1];
-		String[] temp1 = updateString.split("set");
-		String[] temp2 = temp1[1].split("where");
-		String cmpTemp = temp2[1];
-		String setTemp = temp2[0];
-		String[] cmp = DavisBase.parserEquation(cmpTemp);
-		String[] set = DavisBase.parserEquation(setTemp);
-		if(!DavisBase.checkTableExists(table)){
-			System.out.println("Table "+table+" does not exist.");
+		String[] tokns=updateTheString.split(" ");
+		String tables = tokns[1];
+		String[] temporary1 = updateTheString.split("set");
+		String[] temporary2 = temporary1[1].split("where");
+		String cmpTemporary = temporary2[1];
+		String setTemporary = temporary2[0];
+		String[] cmps = DavisBase.parserEquation(cmpTemporary);
+		String[] sets = DavisBase.parserEquation(setTemporary);
+		if(!DavisBase.checkTableExists(tables)){
+			System.out.println("Table "+tables+" do not exists.");
 		}
 		else
 		{
-			update(table, cmp, set);
+			update(tables, cmps, sets);
 		}
 		
 	}
-	public static void update(String table, String[] cmp, String[] set){
+	public static void update(String tables, String[] cmps, String[] sets){
 		try{
 			
-			int key = new Integer(cmp[2]);
+			int key = new Integer(cmps[2]);
 			
-			RandomAccessFile file = new RandomAccessFile("data/"+table+".tbl", "rw");
+			RandomAccessFile file = new RandomAccessFile("data/"+tables+".tbl", "rw");
 			int numPages = Table.pages(file);
 			int page = 0;
 			for(int p = 1; p <= numPages; p++)
@@ -45,7 +45,7 @@ public class UpdateTable {
 			
 			if(page==0)
 			{
-				System.out.println("The given key value does not exist");
+				System.out.println("The value of key do not exist");
 				return;
 			}
 			
@@ -57,30 +57,30 @@ public class UpdateTable {
 			int offset = Page.getCellOffset(file, page, x);
 			long loc = Page.getCellLoc(file, page, x);
 			
-			String[] cols = Table.getColName(table);
+			String[] cols = Table.getColName(tables);
 			String[] values = Table.retrieveValues(file, loc);
 
-			String[] type = Table.getDataType(table);
+			String[] type = Table.getDataType(tables);
 			for(int i=0; i < type.length; i++)
 				if(type[i].equals("DATE") || type[i].equals("DATETIME"))
 					values[i] = "'"+values[i]+"'";
 
 			for(int i = 0; i < cols.length; i++)
-				if(cols[i].equals(set[0]))
+				if(cols[i].equals(sets[0]))
 					x = i;
-			values[x] = set[2];
+			values[x] = sets[2];
 
-			String[] nullable = Table.getNullable(table);
-			for(int i = 0; i < nullable.length; i++){
-				if(values[i].equals("null") && nullable[i].equals("NO")){
+			String[] nullble = Table.getNullable(tables);
+			for(int i = 0; i < nullble.length; i++){
+				if(values[i].equals("null") && nullble[i].equals("NO")){
 					System.out.println("NULL-value constraint violation");
 					return;
 				}
 			}
 
 			byte[] stc = new byte[cols.length-1];
-			int plsize = Table.calPayloadSize(table, values, stc);
-			Page.updateLeafCell(file, page, offset, plsize, key, stc, values);
+			int plusize = Table.calPayloadSize(tables, values, stc);
+			Page.updateLeafCell(file, page, offset, plusize, key, stc, values);
 
 			file.close();
 
