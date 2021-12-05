@@ -68,7 +68,7 @@ public class DavisBase {
 		return a;
 	}
 	
-	
+	// help function to display all commands supported.
 	public static void help() {
 		System.out.println(line("*",82));
 		System.out.println("SUPPORTED COMMANDS");
@@ -95,66 +95,80 @@ public class DavisBase {
 
 
 	
-	public static boolean tableExists(String tablename){
+	public static boolean checkTableExists(String tablename){
 		tablename = tablename+".tbl";
 		
 		try {
-			File dataDir = new File("data");
-			String[] oldTableFiles;
-			oldTableFiles = dataDir.list();
-			for (int i=0; i<oldTableFiles.length; i++) {
-				if(oldTableFiles[i].equals(tablename))
+
+			File dataDir = new File("data"); // initialize data folder
+
+			String[] oldTableFilesArray; // arraylist of tables names
+
+			oldTableFilesArray = dataDir.list();
+
+			for (int i=0; i<oldTableFilesArray.length; i++) {
+
+				if(oldTableFilesArray[i].equals(tablename))
 					return true;
 			}
 		}
+
+
 		catch (SecurityException se) {
-			System.out.println("Unable to create data container directory");
+
+			System.out.println("Failed to create data directory");
 			System.out.println(se);
 		}
 
 		return false;
 	}
 
+	
+	// parser Function to parse the string eqn with operators
+	public static String[] parserEquation(String eqn){
 
-	public static String[] parserEquation(String equ){
 		String comparator[] = new String[3];
+
 		String temp[] = new String[2];
-		if(equ.contains("=")) {
-			temp = equ.split("=");
+
+		if(eqn.contains("=")) {
+
+			temp = eqn.split("=");
 			comparator[0] = temp[0].trim();
 			comparator[1] = "=";
 			comparator[2] = temp[1].trim();
 		}
 
-		if(equ.contains("<")) {
-			temp = equ.split("<");
+		if(eqn.contains("<")) {
+			temp = eqn.split("<");
 			comparator[0] = temp[0].trim();
 			comparator[1] = "<";
 			comparator[2] = temp[1].trim();
 	
 		}
 		
-		if(equ.contains(">")) {
-			temp = equ.split(">");
+		if(eqn.contains(">")) {
+			temp = eqn.split(">");
 			comparator[0] = temp[0].trim();
 			comparator[1] = ">";
 			comparator[2] = temp[1].trim();
 		}
 		
-		if(equ.contains("<=")) {
-			temp = equ.split("<=");
+		if(eqn.contains("<=")) {
+			temp = eqn.split("<=");
 			comparator[0] = temp[0].trim();
 			comparator[1] = "<=";
 			comparator[2] = temp[1].trim();
 		}
 
-		if(equ.contains(">=")) {
-			temp = equ.split(">=");
+		if(eqn.contains(">=")) {
+			temp = eqn.split(">=");
 			comparator[0] = temp[0].trim();
 			comparator[1] = ">=";
 			comparator[2] = temp[1].trim();
 		}
-		//System.out.println(comparator[1]);
+		
+		
 		return comparator;
 	}
 		
@@ -223,7 +237,7 @@ public class DavisBase {
 		}
 	} 
 
-	
+
     public static void parseQueryString(String queryString) {
 		System.out.println("STUB: Calling the method to process the command");
 		System.out.println("Parsing the string:\"" + queryString + "\"");
@@ -251,7 +265,7 @@ public class DavisBase {
 				column[i] = column[i].trim();
 		}
 		
-		if(!tableExists(tableName)){
+		if(!checkTableExists(tableName)){
 			System.out.println("Table "+tableName+" does not exist.");
 		}
 		else

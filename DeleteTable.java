@@ -16,7 +16,7 @@ public class DeleteTable {
 		String[] temp = deleteString.split("where");
 		String cmpTemp = temp[1];
 		String[] cmp = DavisBase.parserEquation(cmpTemp);
-		if(!DavisBase.tableExists(table)){
+		if(!DavisBase.checkTableExists(table)){
 			System.out.println("Table "+table+" does not exist.");
 		}
 		else

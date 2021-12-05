@@ -21,7 +21,7 @@ public class UpdateTable {
 		String setTemp = temp2[0];
 		String[] cmp = DavisBase.parserEquation(cmpTemp);
 		String[] set = DavisBase.parserEquation(setTemp);
-		if(!DavisBase.tableExists(table)){
+		if(!DavisBase.checkTableExists(table)){
 			System.out.println("Table "+table+" does not exist.");
 		}
 		else
