@@ -13,7 +13,7 @@ public class HexDump {
 	
 	/* TODO: This will be deprecated in future versions */
 	static String columnGap = " ";
-	static int pageSize = 512;
+	static int size_of_page = 512;
 	static RandomAccessFile raf;
 	static String displayControlCharacterAs = ".";
 	static int currentByteColumn = 0;
@@ -100,8 +100,8 @@ public class HexDump {
 			 * potentially unsafe if the code is modified!!! */
 			while(thisByteOffset < size) {
 
-				/* Display a page header before every pageSize number of bytes */
-				if(thisByteOffset % pageSize == 0) {
+				/* Display a page header before every size_of_page number of bytes */
+				if(thisByteOffset % size_of_page == 0) {
 					printPageHeader();
 				}
 

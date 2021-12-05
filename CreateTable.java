@@ -32,8 +32,8 @@ public static void parseCreateString(String createString) {
 				 
 		String tableName = tokens[2];
 		String[] temp = createString.split(tableName);
-		String cols = temp[1].trim();
-		String[] create_cols = cols.substring(1, cols.length()-1).split(",");
+		String coloumns = temp[1].trim();
+		String[] create_cols = coloumns.substring(1, coloumns.length()-1).split(",");
 		
 		for(int i = 0; i < create_cols.length; i++)
 			create_cols[i] = create_cols[i].trim();
@@ -52,7 +52,7 @@ public static void createTable(String table, String[] col){                     
 	try{	
 		
 		RandomAccessFile file = new RandomAccessFile("data/"+table+".tbl", "rw");				//creates .tbl file (table)
-		file.setLength(Table.pageSize);	//512bytes										
+		file.setLength(Table.size_of_page);	//512bytes										
 		file.seek(0);				//seek first pos
 		file.writeByte(0x0D);		//Write
 		file.close();
@@ -62,7 +62,7 @@ public static void createTable(String table, String[] col){                     
 		int numOfPages = Table.pages(file);
 		int page=1;
 		for(int p = 1; p <= numOfPages; p++){
-			int rm = Page.getRightMost(file, p);
+			int rm = Page.get_right_most(file, p);
 			if(rm == 0)
 				page = p;
 		}
@@ -82,7 +82,7 @@ public static void createTable(String table, String[] col){                     
 		numOfPages = Table.pages(file);
 		page=1;
 		for(int p = 1; p <= numOfPages; p++){
-			int rm = Page.getRightMost(file, p);
+			int rm = Page.get_right_most(file, p);
 			if(rm == 0)
 				page = p;
 		}
@@ -137,7 +137,7 @@ public static void insertInto(RandomAccessFile file, String table, String[] valu
 	int key = new Integer(values[0]);
 	int page = Table.searchKeyPage(file, key);
 	if(page != 0)
-		if(Page.hasKey(file, page, key)){
+		if(Page.has_key(file, page, key)){
 			System.out.println("Uniqueness constraint violation");
 			return;
 		}
@@ -147,8 +147,8 @@ public static void insertInto(RandomAccessFile file, String table, String[] valu
 
 	byte[] stc = new byte[dtype.length-1];
 	short plSize = (short) Table.calPayloadSize(table, values, stc);
-	int cellSize = plSize + 6;
-	int offset = Page.checkLeafSpace(file, page, cellSize);
+	int cell_size = plSize + 6;
+	int offset = Page.checkLeafSpace(file, page, cell_size);
 
 
 	if(offset != -1){

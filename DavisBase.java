@@ -15,7 +15,7 @@ import java.util.*;
 public class DavisBase {
 
 
-	public static int pageSize = 512;  // define global pagesize
+	public static int size_of_page = 512;  // define global size_of_page
 
 	static String prompt = "davisql> ";
 
@@ -254,13 +254,13 @@ public class DavisBase {
 		}
 		String[] select = temp[0].split("from");
 		String tableName = select[1].trim();
-		String cols = select[0].replace("select", "").trim();
-		if(cols.contains("*")){
+		String coloumns = select[0].replace("select", "").trim();
+		if(coloumns.contains("*")){
 			column = new String[1];
 			column[0] = "*";
 		}
 		else{
-			column = cols.split(",");
+			column = coloumns.split(",");
 			for(int i = 0; i < column.length; i++)
 				column[i] = column[i].trim();
 		}

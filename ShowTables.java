@@ -16,12 +16,12 @@ public static void showTables() {
 		System.out.println("Parsing the string:\"show tables\"");
 		
 		String table = "davisbase_tables";  // default table_name that contains list of all the tables;
-		String[] cols = {"table_name"};  // default col name
+		String[] coloumns = {"table_name"};  // default col name
 		String[] cmptr = new String[0];
-		select(table, cols, cmptr);   //Table.java 
+		select(table, coloumns, cmptr);   //Table.java 
 	}
 
-public static void select(String table, String[] cols, String[] cmp){     //select(davisbase_tables,table_name,=)
+public static void select(String table, String[] coloumns, String[] cmp){     //select(davisbase_tables,table_name,=)
 	try{
 		
 		RandomAccessFile file = new RandomAccessFile("data/"+table+".tbl", "rw");
@@ -31,7 +31,7 @@ public static void select(String table, String[] cols, String[] cmp){     //sele
 		Buffer buffer = new Buffer();
 		
 		Table.filter(file, cmp, columnName, type, buffer);
-		buffer.display(cols);
+		buffer.display(coloumns);
 		file.close();
 	}catch(Exception e){
 		System.out.println(e);

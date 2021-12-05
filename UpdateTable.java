@@ -39,7 +39,7 @@ public class UpdateTable {
 			int numPages = Table.pages(file);
 			int page = 0;
 			for(int p = 1; p <= numPages; p++)
-				if(Page.hasKey(file, p, key)&Page.getPageType(file, p)==0x0D){
+				if(Page.has_key(file, p, key)&Page.getPageType(file, p)==0x0D){
 					page = p;
 				}
 			
@@ -57,7 +57,7 @@ public class UpdateTable {
 			int offset = Page.getCellOffset(file, page, x);
 			long loc = Page.getCellLoc(file, page, x);
 			
-			String[] cols = Table.getColName(table);
+			String[] coloumns = Table.getColName(table);
 			String[] values = Table.retrieveValues(file, loc);
 
 			String[] type = Table.getDataType(table);
@@ -65,8 +65,8 @@ public class UpdateTable {
 				if(type[i].equals("DATE") || type[i].equals("DATETIME"))
 					values[i] = "'"+values[i]+"'";
 
-			for(int i = 0; i < cols.length; i++)
-				if(cols[i].equals(set[0]))
+			for(int i = 0; i < coloumns.length; i++)
+				if(coloumns[i].equals(set[0]))
 					x = i;
 			values[x] = set[2];
 
@@ -78,7 +78,7 @@ public class UpdateTable {
 				}
 			}
 
-			byte[] stc = new byte[cols.length-1];
+			byte[] stc = new byte[coloumns.length-1];
 			int plsize = Table.calPayloadSize(table, values, stc);
 			Page.updateLeafCell(file, page, offset, plsize, key, stc, values);
 

@@ -32,7 +32,7 @@ public class DropTable {
 			RandomAccessFile file = new RandomAccessFile("data/davisbase_tables.tbl", "rw");
 			int numOfPages = Table.pages(file);
 			for(int page = 1; page <= numOfPages; page ++){
-				file.seek((page-1)*Table.pageSize);
+				file.seek((page-1)*Table.size_of_page);
 				byte fileType = file.readByte();
 				if(fileType == 0x0D)
 				{
@@ -58,7 +58,7 @@ public class DropTable {
 			file = new RandomAccessFile("data/davisbase_columns.tbl", "rw");
 			numOfPages = Table.pages(file);
 			for(int page = 1; page <= numOfPages; page ++){
-				file.seek((page-1)*Table.pageSize);
+				file.seek((page-1)*Table.size_of_page);
 				byte fileType = file.readByte();
 				if(fileType == 0x0D)
 				{

@@ -18,8 +18,8 @@ import java.text.*;
 
 public class Table{
 	
-	public static int pageSize = 512;
-	public static String datePattern = "yyyy-MM-dd_HH:mm:ss";
+	public static int size_of_page = 512;
+	public static String date_pattern = "yyyy-MM-dd_HH:mm:ss";
 
 	public static void main(String[] args){}
 
@@ -27,37 +27,37 @@ public class Table{
 	
 	public static int pages(RandomAccessFile file){
 		// get the file page size;
-		int num_pages = 0;
+		int number_pages = 0;
 		try{
-			num_pages = (int)(file.length()/(new Long(pageSize)));
+			number_pages = (int)(file.length()/(new Long(size_of_page)));
 		}catch(Exception e){
 			System.out.println(e);
 		}
 
-		return num_pages;
+		return number_pages;
 	}
 
 	public static String[] getColName(String table){ //tables=davisbase_tables
-		String[] cols = new String[0];
+		String[] coloumns = new String[0];
 		try{
 			RandomAccessFile file = new RandomAccessFile("data/davisbase_columns.tbl", "rw"); // read file
 			Buffer buffer = new Buffer();
 			String[] columnName = {"rowid", "table_name", "column_name", "data_type", "ordinal_position", "is_nullable"}; // rows defined in column table;
 			String[] cmp = {"table_name","=",table};
 			filter(file, cmp, columnName, buffer);
-			HashMap<Integer, String[]> content = buffer.content;
+			HashMap<Integer, String[]> contents = buffer.contents;
 			ArrayList<String> array = new ArrayList<String>();
-			for(String[] i : content.values()){
+			for(String[] i : contents.values()){
 				array.add(i[2]);
 			}
 			int size=array.size();
-			cols = array.toArray(new String[size]);
+			coloumns = array.toArray(new String[size]);
 			file.close();
-			return cols;
+			return coloumns;
 		}catch(Exception e){
 			System.out.println(e);
 		}
-		return cols;
+		return coloumns;
 	}
 	
 	public static String[] getDataType(String table){
@@ -68,9 +68,9 @@ public class Table{
 			String[] columnName = {"rowid", "table_name", "column_name", "data_type", "ordinal_position", "is_nullable"};
 			String[] cmp = {"table_name","=",table};
 			filter(file, cmp, columnName, buffer);
-			HashMap<Integer, String[]> content = buffer.content;
+			HashMap<Integer, String[]> contents = buffer.contents;
 			ArrayList<String> array = new ArrayList<String>();
-			for(String[] x : content.values()){
+			for(String[] x : contents.values()){
 				array.add(x[3]);
 			}
 			int size=array.size();
@@ -90,7 +90,7 @@ public class Table{
 			int numOfPages = pages(file); // get num of pages;
 			for(int page = 1; page <= numOfPages; page++){
 				
-				file.seek((page-1)*pageSize);  // get to the current page start header 
+				file.seek((page-1)*size_of_page);  // get to the current page start header 
 				byte pageType = file.readByte(); // reads the byte of curr loc
 				if(pageType == 0x0D)  // if it is a leaf page of b-tree , here 13 , unitl its leaf it will skip this
 				{
@@ -127,7 +127,7 @@ public class Table{
 		String[] values = null;
 		try{
 			
-			SimpleDateFormat dateFormat = new SimpleDateFormat (datePattern);
+			SimpleDateFormat dateFormat = new SimpleDateFormat (date_pattern);
 
 			file.seek(loc+2);
 			int key = file.readInt();
@@ -266,13 +266,13 @@ public static int searchKeyPage(RandomAccessFile file, int key){
 		try{
 			int numPages = pages(file);
 			for(int page = 1; page <= numPages; page++){
-				file.seek((page - 1)*pageSize);
+				file.seek((page - 1)*size_of_page);
 				byte pageType = file.readByte();
 				if(pageType == 0x0D){
 					int[] keys = Page.getKeyArray(file, page);
 					if(keys.length == 0)
 						return 0;
-					int rm = Page.getRightMost(file, page);
+					int rm = Page.get_right_most(file, page);
 					if(keys[0] <= key && key <= keys[keys.length - 1]){
 						return page;
 					}else if(rm == 0 && keys[keys.length - 1] < key){
@@ -296,9 +296,9 @@ public static int searchKeyPage(RandomAccessFile file, int key){
 			String[] columnName = {"rowid", "table_name", "column_name", "data_type", "ordinal_position", "is_nullable"};
 			String[] cmp = {"table_name","=",table};
 			filter(file, cmp, columnName, buffer);
-			HashMap<Integer, String[]> content = buffer.content;
+			HashMap<Integer, String[]> contents = buffer.contents;
 			ArrayList<String> array = new ArrayList<String>();
-			for(String[] i : content.values()){
+			for(String[] i : contents.values()){
 				array.add(i[5]);
 			}
 			int size=array.size();
@@ -319,7 +319,7 @@ public static int searchKeyPage(RandomAccessFile file, int key){
 			
 			for(int page = 1; page <= numOfPages; page++){
 				
-				file.seek((page-1)*pageSize);
+				file.seek((page-1)*size_of_page);
 				byte pageType = file.readByte();
 				
 					if(pageType == 0x0D){
