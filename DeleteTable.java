@@ -1,22 +1,33 @@
 import java.io.RandomAccessFile;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.SortedMap;
+import java.io.FileReader;
+import java.io.*;
+import java.util.*;
+
+
+
+
 public class DeleteTable {
+
+	
 	public static void parseDeleteString(String deleteString) {
-		System.out.println("DELETE METHOD");
+
+		System.out.println("STUB: CALLED DELETE METHOD");
 		System.out.println("Parsing the string:\"" + deleteString + "\"");
 		
-		String[] tokens=deleteString.split(" ");
+		String[] tokens = deleteString.split(" ");
 		String table = tokens[3];
+
 		String[] temp = deleteString.split("where");
 		String cmpTemp = temp[1];
+
 		String[] cmp = DavisBase.parserEquation(cmpTemp);
-		if(!DavisBase.tableExists(table)){
+		if(!DavisBase.checkTableExists(table)){
 			System.out.println("Table "+table+" does not exist.");
 		}
 		else
@@ -24,6 +35,9 @@ public class DeleteTable {
 			delete(table, cmp);
 		}
 	}
+
+
+
 	public static void delete(String table, String[] cmp){
 		try{
 		int key = new Integer(cmp[2]);
@@ -56,6 +70,8 @@ public class DeleteTable {
 				k++;
 			}
 		}
+
+
 		Page.setCellNumber(file, page, (byte)k);
 		
 		}catch(Exception e)

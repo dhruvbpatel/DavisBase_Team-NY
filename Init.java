@@ -10,7 +10,7 @@ import java.util.SortedMap;
 
 public class Init{
 
-
+	
 public static int pageSize = 512;
 public static void init(){
 		try {

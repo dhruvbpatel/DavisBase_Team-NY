@@ -11,7 +11,7 @@ public class Insert {
 			String[] insert_vals = temporary.substring(1, temporary.length()-1).split(",");
 			for(int i = 0; i < insert_vals.length; i++)
 				insert_vals[i] = insert_vals[i].trim();
-			if(!DavisBase.tableExists(table)){
+			if(!DavisBase.checkTableExists(table)){
 				System.out.println("Table "+table+" does not exist.");
 			}
 			else

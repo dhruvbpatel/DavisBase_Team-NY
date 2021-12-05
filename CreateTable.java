@@ -38,7 +38,7 @@ public static void parseCreateString(String createString) {
 		for(int i = 0; i < create_cols.length; i++)
 			create_cols[i] = create_cols[i].trim();
 		
-		if(DavisBase.tableExists(tableName)){
+		if(DavisBase.checkTableExists(tableName)){
 			System.out.println("Table "+tableName+" already exists.");
 		}
 		else

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.SortedMap;
+
+
 public class DropTable {
 	public static void dropTable(String dropTableString) {
 		System.out.println("DROP METHOD");
@@ -13,7 +15,7 @@ public class DropTable {
 		
 		String[] tokens=dropTableString.split(" ");
 		String tableName = tokens[2];
-		if(!DavisBase.tableExists(tableName)){
+		if(!DavisBase.checkTableExists(tableName)){
 			System.out.println("Table "+tableName+" does not exist.");
 		}
 		else
@@ -22,6 +24,8 @@ public class DropTable {
 		}		
 
 	}
+
+	
 	public static void drop(String table){
 		try{
 			
