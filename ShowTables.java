@@ -31,7 +31,7 @@ public static void select(String table, String[] coloumns, String[] cmp){     //
 		Buffer buffer = new Buffer();
 		
 		Table.filter(file, cmp, columnName, type, buffer);
-		buffer.display(coloumns);
+		buffer.b_disp(coloumns);
 		file.close();
 	}catch(Exception e){
 		System.out.println(e);

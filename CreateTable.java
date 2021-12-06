@@ -13,37 +13,37 @@ public static void parseCreateString(String createString) {
 		
 		System.out.println("CREATE METHOD");
 		System.out.println("Parsing the string:\"" + createString + "\"");
-		String[] tokens=createString.split(" ");
+		String[] ct_tokens=createString.split(" ");
 		
-		if (tokens[1].compareTo("index")==0)
+		if (ct_tokens[1].compareTo("index")==0)
 		{
-		String col = tokens[4];
-		String colName = col.substring(1,col.length()-1);
-		Index.createIndex(tokens[3],colName, "String");
+		String ct_col = ct_tokens[4];
+		String ct_name_col = ct_col.substring(1,ct_col.length()-1);
+		Index.createIndex(ct_tokens[3],ct_name_col, "String");
 		}
 		else
 		{
 		
-		if (tokens[1].compareTo("table")>0){
+		if (ct_tokens[1].compareTo("table")>0){
 			System.out.println("Wrong syntax");
 			
 		}
 		else{
 				 
-		String tableName = tokens[2];
-		String[] temp = createString.split(tableName);
-		String coloumns = temp[1].trim();
-		String[] create_cols = coloumns.substring(1, coloumns.length()-1).split(",");
+		String name_of_the_table = ct_tokens[2];
+		String[] ct_temp = createString.split(name_of_the_table);
+		String ct_colmns = ct_temp[1].trim();
+		String[] create_cols = ct_colmns.substring(1, ct_colmns.length()-1).split(",");
 		
 		for(int i = 0; i < create_cols.length; i++)
 			create_cols[i] = create_cols[i].trim();
 		
-		if(DavisBase.checkTableExists(tableName)){
-			System.out.println("Table "+tableName+" already exists.");
+		if(DavisBase.checkTableExists(name_of_the_table)){
+			System.out.println("Table "+name_of_the_table+" already exists.");
 		}
 		else
 			{
-			createTable(tableName, create_cols);		
+			createTable(name_of_the_table, create_cols);		
 			}
 			}
 		}
@@ -53,15 +53,15 @@ public static void createTable(String table, String[] col){                     
 		
 		RandomAccessFile file = new RandomAccessFile("data/"+table+".tbl", "rw");				//creates .tbl file (table)
 		file.setLength(Table.size_of_page);	//512bytes										
-		file.seek(0);				//seek first pos
+		file.seek(0);				//seek first ct_position
 		file.writeByte(0x0D);		//Write
 		file.close();
 		
 		file = new RandomAccessFile("data/davisbase_tables.tbl", "rw");
 		
-		int numOfPages = Table.pages(file);
+		int pages_num = Table.pages(file);
 		int page=1;
-		for(int p = 1; p <= numOfPages; p++){
+		for(int p = 1; p <= pages_num; p++){
 			int rm = Page.get_right_most(file, p);
 			if(rm == 0)
 				page = p;
@@ -79,9 +79,9 @@ public static void createTable(String table, String[] col){                     
 
 		file = new RandomAccessFile("data/davisbase_columns.tbl", "rw");
 		
-		numOfPages = Table.pages(file);
+		pages_num = Table.pages(file);
 		page=1;
-		for(int p = 1; p <= numOfPages; p++){
+		for(int p = 1; p <= pages_num; p++){
 			int rm = Page.get_right_most(file, p);
 			if(rm == 0)
 				page = p;
@@ -98,14 +98,14 @@ public static void createTable(String table, String[] col){                     
 			l = l + 1;
 			String[] token = col[i].split(" ");
 			String col_name = token[0];
-			String dt = token[1].toUpperCase();
-			String pos = Integer.toString(i+1);
-			String nullable;
+			String datee = token[1].toUpperCase();
+			String ct_position = Integer.toString(i+1);
+			String ct_null;
 			if(token.length > 2)
-				nullable = "NO";
+				ct_null = "NO";
 			else
-				 nullable = "YES";
-			String[] value = {Integer.toString(l), table, col_name, dt, pos, nullable};
+				 ct_null = "YES";
+			String[] value = {Integer.toString(l), table, col_name, datee, ct_position, ct_null};
 			insertInto("davisbase_columns", value);
 		}
 
@@ -124,7 +124,7 @@ public static void insertInto(String table, String[] values){
 	}
 }
 public static void insertInto(RandomAccessFile file, String table, String[] values){
-	String[] dtype = Table.getDataType(table);
+	String[] ct_dtype = Table.getDataType(table);
 	String[] nullable = Table.getNullable(table);
 
 	for(int i = 0; i < nullable.length; i++)
@@ -145,14 +145,14 @@ public static void insertInto(RandomAccessFile file, String table, String[] valu
 		page = 1;
 
 
-	byte[] stc = new byte[dtype.length-1];
-	short plSize = (short) Table.calPayloadSize(table, values, stc);
-	int cell_size = plSize + 6;
-	int offset = Page.checkLeafSpace(file, page, cell_size);
+	byte[] ct_stc = new byte[ct_dtype.length-1];
+	short size_of_pl = (short) Table.calPayloadSize(table, values, ct_stc);
+	int size_of_the_cell = size_of_pl + 6;
+	int offset = Page.checkLeafSpace(file, page, size_of_the_cell);
 
 
 	if(offset != -1){
-		Page.insertLeafCell(file, page, offset, plSize, key, stc, values);
+		Page.insertLeafCell(file, page, offset, size_of_pl, key, ct_stc, values);
 	}else{
 		Page.splitLeaf(file, page);
 		insertInto(file, table, values);
