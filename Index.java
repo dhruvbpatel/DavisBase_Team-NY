@@ -19,7 +19,7 @@ public static void createIndex(String tbl_name,String col_name, String curr_data
     int curr_record_size = 0;
 
 
-
+    
  if(curr_data_type.equalsIgnoreCase("int"))
         {
             curr_record_size=curr_record_size+4;

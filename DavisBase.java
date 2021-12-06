@@ -11,7 +11,6 @@ import java.util.*;
 
 // merged settings.java with davisbase.java
 
-
 public class DavisBase {
 
 
