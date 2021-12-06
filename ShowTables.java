@@ -12,8 +12,8 @@ import java.text.SimpleDateFormat;
 public class ShowTables{
 
 public static void showTables() {
-		System.out.println("SHOW METHOD");
-		System.out.println("Parsing the string:\"show tables\"");
+		System.out.println("STACKTRACE: SHOW METHOD CALLED");
+		// System.out.println("Parsing the string:\"show tables\"");
 		
 		String table = "davisbase_tables";  // default table_name that contains list of all the tables;
 		String[] coloumns = {"table_name"};  // default col name

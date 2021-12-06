@@ -25,7 +25,7 @@ class Buffer{
 	public void b_disp(String[] col){
 		
 		if(b_row_num == 0){
-			System.out.println("Empty set.");
+			System.out.println("EMPTY RESULTSET: Returned Empty resultset.");
 		}
 		else{
 			for(int i = 0; i < b_format.length; i++)

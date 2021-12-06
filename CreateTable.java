@@ -11,27 +11,32 @@ import java.text.SimpleDateFormat;
 public class CreateTable {
 public static void parseCreateString(String createString) {
 		
-		System.out.println("CREATE METHOD");
-		System.out.println("Parsing the string:\"" + createString + "\"");
+		System.out.println("STACKTRACE: CREATE METHOD");
+		// System.out.println("Parsing the string:\"" + createString + "\"");
+
 		String[] ct_tokens=createString.split(" ");
 		
 		if (ct_tokens[1].compareTo("index")==0)
 		{
 		String ct_col = ct_tokens[4];
+
 		String ct_name_col = ct_col.substring(1,ct_col.length()-1);
+
 		Index.createIndex(ct_tokens[3],ct_name_col, "String");
 		}
 		else
 		{
 		
 		if (ct_tokens[1].compareTo("table")>0){
-			System.out.println("Wrong syntax");
+			System.out.println("ERROR: Wrong syntax");
 			
 		}
 		else{
 				 
 		String name_of_the_table = ct_tokens[2];
+
 		String[] ct_temp = createString.split(name_of_the_table);
+
 		String ct_colmns = ct_temp[1].trim();
 		String[] create_cols = ct_colmns.substring(1, ct_colmns.length()-1).split(",");
 		
@@ -39,6 +44,7 @@ public static void parseCreateString(String createString) {
 			create_cols[i] = create_cols[i].trim();
 		
 		if(DavisBase.checkTableExists(name_of_the_table)){
+
 			System.out.println("Table "+name_of_the_table+" already exists.");
 		}
 		else
@@ -48,6 +54,9 @@ public static void parseCreateString(String createString) {
 			}
 		}
 	}
+
+
+
 public static void createTable(String table, String[] col){                                     //Create from DavisBase.java
 	try{	
 		
@@ -113,9 +122,13 @@ public static void createTable(String table, String[] col){                     
 		System.out.println(e);
 	}
 }
+
+
+
 public static void insertInto(String table, String[] values){
 	try{
 		RandomAccessFile file = new RandomAccessFile("data/"+table+".tbl", "rw");
+
 		insertInto(file, table, values);
 		file.close();
 
@@ -123,22 +136,30 @@ public static void insertInto(String table, String[] values){
 		System.out.println(e);
 	}
 }
+
+
 public static void insertInto(RandomAccessFile file, String table, String[] values){
 	String[] ct_dtype = Table.getDataType(table);
 	String[] nullable = Table.getNullable(table);
 
 	for(int i = 0; i < nullable.length; i++)
+
 		if(values[i].equals("null") && nullable[i].equals("NO")){
-			System.out.println("NULL-value constraint violation");
+
+			System.out.println("ERROR: NULL VALUE VIOLATION");
+
 			System.out.println();
 			return;
 		}
 
 	int key = new Integer(values[0]);
+
 	int page = Table.searchKeyPage(file, key);
+
 	if(page != 0)
 		if(Page.has_key(file, page, key)){
-			System.out.println("Uniqueness constraint violation");
+
+			System.out.println("ERROR: Uniqueness violation");
 			return;
 		}
 	if(page == 0)

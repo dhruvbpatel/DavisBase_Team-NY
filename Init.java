@@ -1,44 +1,54 @@
 import java.io.RandomAccessFile;
 import java.io.File;
+import java.util.SortedMap;
+import java.util.Arrays;
+import java.io.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.SortedMap;
+import java.util.*;
+
 
 
 public class Init{
-
+	
 	
 public static int size_of_page = 512;
+
 public static void init(){
 		try {
-			File dataDir = new File("data");
-			if(dataDir.mkdir()){
-				System.out.println("The data base doesn't exit, initializing data base...");
+
+			File data_directory = new File("data");
+			if(data_directory.mkdir()){
+
+				System.out.println("STACKTRACE: DataBase Not Found, Initializing DataBase...");
 				initialize();
 			}
 			else {
 				
-				String[] oldTableFiles = dataDir.list();
-				boolean checkTab = false;
-				boolean checkCol = false;
-				for (int i=0; i<oldTableFiles.length; i++) {
-					if(oldTableFiles[i].equals("davisbase_tables.tbl"))
-						checkTab = true;
-					if(oldTableFiles[i].equals("davisbase_columns.tbl"))
-						checkCol = true;
+				String[] data_dir_files = data_directory.list();
+
+				boolean isTableExist = false;
+				boolean isColTblExist = false;
+
+				for (int i=0; i<data_dir_files.length; i++) {
+
+					if(data_dir_files[i].equals("davisbase_tables.tbl"))
+						isTableExist = true;
+
+					if(data_dir_files[i].equals("davisbase_columns.tbl"))
+						isColTblExist = true;
 				}
 				
-				if(!checkTab){
-					System.out.println("The davisbase_tables does not exit, initializing data base...");
+				if(!isTableExist){
+					System.out.println("STACKTRACE: davisbase_tables NOT FOUND, initializing DataBase...");
 					System.out.println();
 					initialize();
 				}
 				
-				if(!checkCol){
-					System.out.println("The davisbase_columns table does not exit, initializing data base...");
+				if(!isColTblExist){
+					System.out.println("STACKTRACE: davisbase_columns NOT FOUND, nitializing DataBase...");
 					System.out.println();
 					initialize();
 				}
@@ -55,13 +65,17 @@ public static void initialize() {
 
 		
 		try {
-			File dataDir = new File("data");
-			dataDir.mkdir();
-			String[] oldTableFiles;
-			oldTableFiles = dataDir.list();
-			for (int i=0; i<oldTableFiles.length; i++) {
-				File anOldFile = new File(dataDir, oldTableFiles[i]); 
-				anOldFile.delete();
+
+			File data_directory = new File("data");
+			data_directory.mkdir();
+			
+			String[] data_dir_files;
+
+			data_dir_files = data_directory.list();
+
+			for (int i=0; i<data_dir_files.length; i++) {
+				File prev_file = new File(data_directory, data_dir_files[i]); 
+				prev_file.delete();
 			}
 		}
 		catch (SecurityException e) {
@@ -69,190 +83,192 @@ public static void initialize() {
 		}
 
 		try {
-			RandomAccessFile tablesCatalog = new RandomAccessFile("data/davisbase_tables.tbl", "rw");
-			tablesCatalog.setLength(size_of_page);
-			tablesCatalog.seek(0);
-			tablesCatalog.write(0x0D); 
-			tablesCatalog.writeByte(0x02); 
+			RandomAccessFile tables_list = new RandomAccessFile("data/davisbase_tables.tbl", "rw");
+
+			tables_list.setLength(size_of_page);
+			tables_list.seek(0);
+			tables_list.write(0x0D); 
+			tables_list.writeByte(0x02); 
 			
 			int size1=24;
 			int size2=25;
 			
-			int offsetT=size_of_page-size1;  // 512-24 = 488
-			int offsetC=offsetT-size2;	// 488-25 = 463
+			int offsetT=size_of_page-size1;  
+			int offsetC=offsetT-size2;
 			
-			tablesCatalog.writeShort(offsetC); 
-			tablesCatalog.writeInt(0);
-			tablesCatalog.writeInt(0);
-			tablesCatalog.writeShort(offsetT);
-			tablesCatalog.writeShort(offsetC);
+			tables_list.writeShort(offsetC); 
+			tables_list.writeInt(0);
+			tables_list.writeInt(0);
+			tables_list.writeShort(offsetT);
+			tables_list.writeShort(offsetC);
 			
-			tablesCatalog.seek(offsetT);
-			tablesCatalog.writeShort(20);
-			tablesCatalog.writeInt(1); 
-			tablesCatalog.writeByte(1);
-			tablesCatalog.writeByte(28);
-			tablesCatalog.writeBytes("davisbase_tables");
+			tables_list.seek(offsetT);
+			tables_list.writeShort(20);
+			tables_list.writeInt(1); 
+			tables_list.writeByte(1);
+			tables_list.writeByte(28);
+			tables_list.writeBytes("davisbase_tables");
 			
-			tablesCatalog.seek(offsetC);
-			tablesCatalog.writeShort(21);
-			tablesCatalog.writeInt(2); 
-			tablesCatalog.writeByte(1);
-			tablesCatalog.writeByte(29);
-			tablesCatalog.writeBytes("davisbase_columns");
+			tables_list.seek(offsetC);
+			tables_list.writeShort(21);
+			tables_list.writeInt(2); 
+			tables_list.writeByte(1);
+			tables_list.writeByte(29);
+			tables_list.writeBytes("davisbase_columns");
 			
-			tablesCatalog.close();
+			tables_list.close();
 		}
 		catch (Exception e) {
 			System.out.println(e);
 		}
 		
 		try {
-			RandomAccessFile columnsCatalog = new RandomAccessFile("data/davisbase_columns.tbl", "rw");
-			columnsCatalog.setLength(size_of_page);
-			columnsCatalog.seek(0);       
-			columnsCatalog.writeByte(0x0D); //leaf table of b-tree
-			columnsCatalog.writeByte(0x08); //An array of 2-byte integers that indicate the page offset location of each data cell.The array size is 2n, where n is the number of cells on the page. The array ismaintained in key-sorted order—i.e. rowid order for a table file and index order for an index file.
+			RandomAccessFile cols_list = new RandomAccessFile("data/davisbase_columns.tbl", "rw");
+
+			cols_list.setLength(size_of_page);
+			cols_list.seek(0);       
+			cols_list.writeByte(0x0D); //Btree leaf
+			cols_list.writeByte(0x08); 
 			
-			int[] offset=new int[10]; //[469,422,378,330,281,234,177,128]
-			offset[0]=size_of_page-43; // 469
-			offset[1]=offset[0]-47;// 422
-			offset[2]=offset[1]-44;// 378
-			offset[3]=offset[2]-48;// 330
-			offset[4]=offset[3]-49;// 281
-			offset[5]=offset[4]-47;// 234
-			offset[6]=offset[5]-57;// 177
-			offset[7]=offset[6]-49;// 128
+			int[] offset=new int[10]; 
+			offset[0]=size_of_page-43;
+			offset[1]=offset[0]-47;
+			offset[2]=offset[1]-44;
+			offset[3]=offset[2]-48;
+			offset[4]=offset[3]-49;
+			offset[5]=offset[4]-47;
+			offset[6]=offset[5]-57;
+			offset[7]=offset[6]-49;
 			
-			columnsCatalog.writeShort(offset[7]); 
-			columnsCatalog.writeInt(0); 
-			columnsCatalog.writeInt(0); 
+			cols_list.writeShort(offset[7]); 
+			cols_list.writeInt(0); 
+			cols_list.writeInt(0); 
 			
 			for(int i=0;i<8;i++)
-				columnsCatalog.writeShort(offset[i]);
+				cols_list.writeShort(offset[i]);
 
 			
-			columnsCatalog.seek(offset[0]);
-			columnsCatalog.writeShort(33);
-			columnsCatalog.writeInt(1); 
-			columnsCatalog.writeByte(5);
-			columnsCatalog.writeByte(28);
-			columnsCatalog.writeByte(17);
-			columnsCatalog.writeByte(15);
-			columnsCatalog.writeByte(4);
-			columnsCatalog.writeByte(14);
-			columnsCatalog.writeBytes("davisbase_tables"); 
-			columnsCatalog.writeBytes("rowid"); 
-			columnsCatalog.writeBytes("INT"); 
-			columnsCatalog.writeByte(1); 
-			columnsCatalog.writeBytes("NO"); 	
+			cols_list.seek(offset[0]);
+			cols_list.writeShort(33);
+			cols_list.writeInt(1); 
+			cols_list.writeByte(5);
+			cols_list.writeByte(28);
+			cols_list.writeByte(17);
+			cols_list.writeByte(15);
+			cols_list.writeByte(4);
+			cols_list.writeByte(14);
+			cols_list.writeBytes("davisbase_tables"); 
+			cols_list.writeBytes("rowid"); 
+			cols_list.writeBytes("INT"); 
+			cols_list.writeByte(1); 
+			cols_list.writeBytes("NO"); 	
 			
-			columnsCatalog.seek(offset[1]);
-			columnsCatalog.writeShort(39); 
-			columnsCatalog.writeInt(2); 
-			columnsCatalog.writeByte(5);
-			columnsCatalog.writeByte(28);
-			columnsCatalog.writeByte(22);
-			columnsCatalog.writeByte(16);
-			columnsCatalog.writeByte(4);
-			columnsCatalog.writeByte(14);
-			columnsCatalog.writeBytes("davisbase_tables"); 
-			columnsCatalog.writeBytes("table_name"); 
-			columnsCatalog.writeBytes("TEXT"); 
-			columnsCatalog.writeByte(2);
-			columnsCatalog.writeBytes("NO"); 
+			cols_list.seek(offset[1]);
+			cols_list.writeShort(39); 
+			cols_list.writeInt(2); 
+			cols_list.writeByte(5);
+			cols_list.writeByte(28);
+			cols_list.writeByte(22);
+			cols_list.writeByte(16);
+			cols_list.writeByte(4);
+			cols_list.writeByte(14);
+			cols_list.writeBytes("davisbase_tables"); 
+			cols_list.writeBytes("table_name"); 
+			cols_list.writeBytes("TEXT"); 
+			cols_list.writeByte(2);
+			cols_list.writeBytes("NO"); 
 			
-			columnsCatalog.seek(offset[2]);
-			columnsCatalog.writeShort(34); 
-			columnsCatalog.writeInt(3); 
-			columnsCatalog.writeByte(5);
-			columnsCatalog.writeByte(29);
-			columnsCatalog.writeByte(17);
-			columnsCatalog.writeByte(15);
-			columnsCatalog.writeByte(4);
-			columnsCatalog.writeByte(14);
-			columnsCatalog.writeBytes("davisbase_columns");
-			columnsCatalog.writeBytes("rowid");
-			columnsCatalog.writeBytes("INT");
-			columnsCatalog.writeByte(1);
-			columnsCatalog.writeBytes("NO");
+			cols_list.seek(offset[2]);
+			cols_list.writeShort(34); 
+			cols_list.writeInt(3); 
+			cols_list.writeByte(5);
+			cols_list.writeByte(29);
+			cols_list.writeByte(17);
+			cols_list.writeByte(15);
+			cols_list.writeByte(4);
+			cols_list.writeByte(14);
+			cols_list.writeBytes("davisbase_columns");
+			cols_list.writeBytes("rowid");
+			cols_list.writeBytes("INT");
+			cols_list.writeByte(1);
+			cols_list.writeBytes("NO");
 			
-			columnsCatalog.seek(offset[3]);
-			columnsCatalog.writeShort(40);
-			columnsCatalog.writeInt(4); 
-			columnsCatalog.writeByte(5);
-			columnsCatalog.writeByte(29);
-			columnsCatalog.writeByte(22);
-			columnsCatalog.writeByte(16);
-			columnsCatalog.writeByte(4);
-			columnsCatalog.writeByte(14);
-			columnsCatalog.writeBytes("davisbase_columns");
-			columnsCatalog.writeBytes("table_name");
-			columnsCatalog.writeBytes("TEXT");
-			columnsCatalog.writeByte(2);
-			columnsCatalog.writeBytes("NO");
+			cols_list.seek(offset[3]);
+			cols_list.writeShort(40);
+			cols_list.writeInt(4); 
+			cols_list.writeByte(5);
+			cols_list.writeByte(29);
+			cols_list.writeByte(22);
+			cols_list.writeByte(16);
+			cols_list.writeByte(4);
+			cols_list.writeByte(14);
+			cols_list.writeBytes("davisbase_columns");
+			cols_list.writeBytes("table_name");
+			cols_list.writeBytes("TEXT");
+			cols_list.writeByte(2);
+			cols_list.writeBytes("NO");
 			
-			columnsCatalog.seek(offset[4]);
-			columnsCatalog.writeShort(41);
-			columnsCatalog.writeInt(5); 
-			columnsCatalog.writeByte(5);
-			columnsCatalog.writeByte(29);
-			columnsCatalog.writeByte(23);
-			columnsCatalog.writeByte(16);
-			columnsCatalog.writeByte(4);
-			columnsCatalog.writeByte(14);
-			columnsCatalog.writeBytes("davisbase_columns");
-			columnsCatalog.writeBytes("column_name");
-			columnsCatalog.writeBytes("TEXT");
-			columnsCatalog.writeByte(3);
-			columnsCatalog.writeBytes("NO");
+			cols_list.seek(offset[4]);
+			cols_list.writeShort(41);
+			cols_list.writeInt(5); 
+			cols_list.writeByte(5);
+			cols_list.writeByte(29);
+			cols_list.writeByte(23);
+			cols_list.writeByte(16);
+			cols_list.writeByte(4);
+			cols_list.writeByte(14);
+			cols_list.writeBytes("davisbase_columns");
+			cols_list.writeBytes("column_name");
+			cols_list.writeBytes("TEXT");
+			cols_list.writeByte(3);
+			cols_list.writeBytes("NO");
 			
-			columnsCatalog.seek(offset[5]);
-			columnsCatalog.writeShort(39);
-			columnsCatalog.writeInt(6); 
-			columnsCatalog.writeByte(5);
-			columnsCatalog.writeByte(29);
-			columnsCatalog.writeByte(21);
-			columnsCatalog.writeByte(16);
-			columnsCatalog.writeByte(4);
-			columnsCatalog.writeByte(14);
-			columnsCatalog.writeBytes("davisbase_columns");
-			columnsCatalog.writeBytes("data_type");
-			columnsCatalog.writeBytes("TEXT");
-			columnsCatalog.writeByte(4);
-			columnsCatalog.writeBytes("NO");
+			cols_list.seek(offset[5]);
+			cols_list.writeShort(39);
+			cols_list.writeInt(6); 
+			cols_list.writeByte(5);
+			cols_list.writeByte(29);
+			cols_list.writeByte(21);
+			cols_list.writeByte(16);
+			cols_list.writeByte(4);
+			cols_list.writeByte(14);
+			cols_list.writeBytes("davisbase_columns");
+			cols_list.writeBytes("data_type");
+			cols_list.writeBytes("TEXT");
+			cols_list.writeByte(4);
+			cols_list.writeBytes("NO");
 			
-			columnsCatalog.seek(offset[6]);
-			columnsCatalog.writeShort(49); 
-			columnsCatalog.writeInt(7); 
-			columnsCatalog.writeByte(5);
-			columnsCatalog.writeByte(29);
-			columnsCatalog.writeByte(28);
-			columnsCatalog.writeByte(19);
-			columnsCatalog.writeByte(4);
-			columnsCatalog.writeByte(14);
-			columnsCatalog.writeBytes("davisbase_columns");
-			columnsCatalog.writeBytes("ordinal_position");
-			columnsCatalog.writeBytes("TINYINT");
-			columnsCatalog.writeByte(5);
-			columnsCatalog.writeBytes("NO");
+			cols_list.seek(offset[6]);
+			cols_list.writeShort(49); 
+			cols_list.writeInt(7); 
+			cols_list.writeByte(5);
+			cols_list.writeByte(29);
+			cols_list.writeByte(28);
+			cols_list.writeByte(19);
+			cols_list.writeByte(4);
+			cols_list.writeByte(14);
+			cols_list.writeBytes("davisbase_columns");
+			cols_list.writeBytes("ordinal_position");
+			cols_list.writeBytes("TINYINT");
+			cols_list.writeByte(5);
+			cols_list.writeBytes("NO");
 			
-			columnsCatalog.seek(offset[7]);
-			columnsCatalog.writeShort(41); 
-			columnsCatalog.writeInt(8); 
-			columnsCatalog.writeByte(5);
-			columnsCatalog.writeByte(29);
-			columnsCatalog.writeByte(23);
-			columnsCatalog.writeByte(16);
-			columnsCatalog.writeByte(4);
-			columnsCatalog.writeByte(14);
-			columnsCatalog.writeBytes("davisbase_columns");
-			columnsCatalog.writeBytes("is_nullable");
-			columnsCatalog.writeBytes("TEXT");
-			columnsCatalog.writeByte(6);
-			columnsCatalog.writeBytes("NO");
+			cols_list.seek(offset[7]);
+			cols_list.writeShort(41); 
+			cols_list.writeInt(8); 
+			cols_list.writeByte(5);
+			cols_list.writeByte(29);
+			cols_list.writeByte(23);
+			cols_list.writeByte(16);
+			cols_list.writeByte(4);
+			cols_list.writeByte(14);
+			cols_list.writeBytes("davisbase_columns");
+			cols_list.writeBytes("is_nullable");
+			cols_list.writeBytes("TEXT");
+			cols_list.writeByte(6);
+			cols_list.writeBytes("NO");
 			
-			columnsCatalog.close();
+			cols_list.close();
 		}
 		catch (Exception e) {
 			System.out.println(e);

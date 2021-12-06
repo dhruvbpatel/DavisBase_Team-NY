@@ -17,12 +17,12 @@ public class DavisBase {
 
 	public static int size_of_page = 512;  // define global size_of_page
 
-	static String prompt = "davisql> ";
+	static String prompt = "NYSql> ";
 
 	static String copyright = "Created By Group New York";
 
 
-	static String version = "v0.01";
+	static String version = "v1.01";
 
 	static boolean isExit = false;
 		
@@ -43,7 +43,8 @@ public class DavisBase {
 			// System.out.println(userCommand);
 			parseUserCommand(userCommand);
 		}
-		System.out.println("Exiting...");
+		System.out.println("Exiting The Program .....");
+		System.out.println();
 
 	}
 	
@@ -51,11 +52,17 @@ public class DavisBase {
 
     public static void splashScreen() {
 		System.out.println(line("-",82));
-        System.out.println("Welcome to DavisBase");
-		System.out.println("DavisBase Version " + version);
+        System.out.println("Welcome to NYBase");
+		System.out.println();
+
+		System.out.println("NYBase Version " + version);
+		System.out.println();
+
 		System.out.println(copyright);
-		System.out.println("\nType \"help;\" to List supported commands.");
+		System.out.println("\nUSE \"help; \" to List supported commands.");
 		System.out.println(line("-",82));
+		System.out.println();
+		
 	}
 	
 
@@ -89,8 +96,10 @@ public class DavisBase {
 		System.out.println("\tHELP;                                                        Display this help information.");
 		System.out.println("\tEXIT;                                                        Exit the program.");
 		System.out.println();
-		System.out.println();
+		
 		System.out.println(line("*",82));
+		System.out.println();
+
 	}
 
 
@@ -116,8 +125,9 @@ public class DavisBase {
 
 		catch (SecurityException se) {
 
-			System.out.println("Failed to create data directory");
+			System.out.println("ERROR: Data Directory Creation Failed");
 			System.out.println(se);
+			System.out.println();
 		}
 
 		return false;
@@ -179,37 +189,37 @@ public class DavisBase {
 		switch (commandTokens.get(0)) {
 
 		    case "show":
-		    	System.out.println("STUB: Calling the method to process the command (SHOW)");
+		    	System.out.println("STACKTRACE: Calling SHOW Method");
 			    ShowTables.showTables();
 			    break;
 			
 		    case "create":
-		    	System.out.println("STUB: Calling the method to process the command (CREATE");
+		    	System.out.println("STACKTRACE: Calling CREATE Method");
 				CreateTable.parseCreateString(userCommand);
 			    break;
 
 			case "insert":
-				System.out.println("STUB: Calling the method to process the command (INSERT)");
+				System.out.println("STACKTRACE: Calling (INSERT) Method");
 				Insert.parseInsertString(userCommand);
 				break;
 				
 			case "delete":
-				System.out.println("STUB: Calling the method to process the command (DELETE)");
+				System.out.println("STACKTRACE: Calling (DELETE) Method");
 				DeleteTable.parseDeleteString(userCommand);
 				break;	
 
 			case "update":
-				System.out.println("STUB: Calling the method to process the command (UPDATE)");
+				System.out.println("STACKTRACE: Calling (UPDATE) Method");
 				UpdateTable.parseUpdateString(userCommand);
 				break;
 				
 			case "select":
-				System.out.println("STUB: Calling the method to process the command (SELECT)");
+				System.out.println("STACKTRACE: Calling (SELECT) Method");
 				parseQueryString(userCommand);
 				break;
 
 			case "drop":
-				System.out.println("STUB: Calling the method to process the command (DROP)");
+				System.out.println("STACKTRACE: Calling (DROP) Method");
 				DropTable.dropTable(userCommand);
 				break;	
 
@@ -231,7 +241,7 @@ public class DavisBase {
 				break;
 	
 			default:
-				System.out.println("I didn't understand the command: \"" + userCommand + "\"");
+				System.out.println("Unable to Parse Command : \"" + userCommand + "\"");
 				System.out.println();
 				break;
 		}
@@ -239,8 +249,8 @@ public class DavisBase {
 
 
     public static void parseQueryString(String queryString) {
-		System.out.println("STUB: Calling the method to process the command");
-		System.out.println("Parsing the string:\"" + queryString + "\"");
+		System.out.println("STACKTRACE: Calling Method");
+		// System.out.println("Parsing the string:\"" + queryString + "\"");
 		
 		String[] cmp;
 		String[] column;
