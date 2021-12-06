@@ -42,12 +42,12 @@ public class Table{
 		try{
 			RandomAccessFile file = new RandomAccessFile("data/davisbase_columns.tbl", "rw"); // read file
 			Buffer buffer = new Buffer();
-			String[] columnName = {"rowid", "table_name", "column_name", "data_type", "ordinal_position", "is_nullable"}; // rows defined in column table;
+			String[] name_of_the_column = {"rowid", "table_name", "column_name", "data_type", "ordinal_position", "is_nullable"}; // rows defined in column table;
 			String[] cmp = {"table_name","=",table};
-			filter(file, cmp, columnName, buffer);
-			HashMap<Integer, String[]> contents = buffer.contents;
+			filter(file, cmp, name_of_the_column, buffer);
+			HashMap<Integer, String[]> b_contents = buffer.b_contents;
 			ArrayList<String> array = new ArrayList<String>();
-			for(String[] i : contents.values()){
+			for(String[] i : b_contents.values()){
 				array.add(i[2]);
 			}
 			int size=array.size();
@@ -65,12 +65,12 @@ public class Table{
 		try{
 			RandomAccessFile file = new RandomAccessFile("data/davisbase_columns.tbl", "rw");
 			Buffer buffer = new Buffer();
-			String[] columnName = {"rowid", "table_name", "column_name", "data_type", "ordinal_position", "is_nullable"};
+			String[] name_of_the_column = {"rowid", "table_name", "column_name", "data_type", "ordinal_position", "is_nullable"};
 			String[] cmp = {"table_name","=",table};
-			filter(file, cmp, columnName, buffer);
-			HashMap<Integer, String[]> contents = buffer.contents;
+			filter(file, cmp, name_of_the_column, buffer);
+			HashMap<Integer, String[]> b_contents = buffer.b_contents;
 			ArrayList<String> array = new ArrayList<String>();
-			for(String[] x : contents.values()){
+			for(String[] x : b_contents.values()){
 				array.add(x[3]);
 			}
 			int size=array.size();
@@ -84,7 +84,7 @@ public class Table{
 	}
 
 	
-	public static void filter(RandomAccessFile file, String[] cmp, String[] columnName, Buffer buffer){
+	public static void filter(RandomAccessFile file, String[] cmp, String[] name_of_the_column, Buffer buffer){
 		try{
 			
 			int numOfPages = pages(file); // get num of pages;
@@ -102,18 +102,18 @@ public class Table{
 						String[] vals = retrieveValues(file, loc);
 						int rowid=Integer.parseInt(vals[0]);
 
-						boolean check = cmpCheck(vals, rowid, cmp, columnName);
+						boolean check = cmpCheck(vals, rowid, cmp, name_of_the_column);
 						
 						if(check)
-							buffer.add_vals(rowid, vals);
+							buffer.value_adds(rowid, vals);
 					}
 				}
 				else
 					continue;
 			}
 
-			buffer.columnName = columnName;
-			buffer.format = new int[columnName.length];
+			buffer.name_of_the_column = name_of_the_column;
+			buffer.b_format = new int[name_of_the_column.length];
 
 		}catch(Exception e){
 			System.out.println("Error at filter");
@@ -127,7 +127,7 @@ public class Table{
 		String[] values = null;
 		try{
 			
-			SimpleDateFormat dateFormat = new SimpleDateFormat (date_pattern);
+			SimpleDateFormat dateb_format = new SimpleDateFormat (date_pattern);
 
 			file.seek(loc+2);
 			int key = file.readInt();
@@ -178,12 +178,12 @@ public class Table{
 
 					case 0x0A:  Long temp = file.readLong();
 								Date dateTime = new Date(temp);
-								values[i] = dateFormat.format(dateTime);
+								values[i] = dateb_format.format(dateTime);
 								break;
 
 					case 0x0B:  temp = file.readLong();
 								Date date = new Date(temp);
-								values[i] = dateFormat.format(date).substring(0,10);
+								values[i] = dateb_format.format(date).substring(0,10);
 								break;
 
 					default:    int len = new Integer(stc[i-1]-0x0C);
@@ -293,12 +293,12 @@ public static int searchKeyPage(RandomAccessFile file, int key){
 		try{
 			RandomAccessFile file = new RandomAccessFile("data/davisbase_columns.tbl", "rw");
 			Buffer buffer = new Buffer();
-			String[] columnName = {"rowid", "table_name", "column_name", "data_type", "ordinal_position", "is_nullable"};
+			String[] name_of_the_column = {"rowid", "table_name", "column_name", "data_type", "ordinal_position", "is_nullable"};
 			String[] cmp = {"table_name","=",table};
-			filter(file, cmp, columnName, buffer);
-			HashMap<Integer, String[]> contents = buffer.contents;
+			filter(file, cmp, name_of_the_column, buffer);
+			HashMap<Integer, String[]> b_contents = buffer.b_contents;
 			ArrayList<String> array = new ArrayList<String>();
-			for(String[] i : contents.values()){
+			for(String[] i : b_contents.values()){
 				array.add(i[5]);
 			}
 			int size=array.size();
@@ -312,7 +312,7 @@ public static int searchKeyPage(RandomAccessFile file, int key){
 	}
 
 
-	public static void filter(RandomAccessFile file, String[] cmp, String[] columnName, String[] type, Buffer buffer){
+	public static void filter(RandomAccessFile file, String[] cmp, String[] name_of_the_column, String[] type, Buffer buffer){
 		try{
 			
 			int numOfPages = pages(file);
@@ -335,7 +335,7 @@ public static int searchKeyPage(RandomAccessFile file, int key){
 							if(type[j].equals("DATE") || type[j].equals("DATETIME"))
 								vals[j] = "'"+vals[j]+"'";
 						
-						boolean check = cmpCheck(vals, rowid , cmp, columnName);
+						boolean check = cmpCheck(vals, rowid , cmp, name_of_the_column);
 
 						
 						for(int j=0; j < type.length; j++)
@@ -343,15 +343,15 @@ public static int searchKeyPage(RandomAccessFile file, int key){
 								vals[j] = vals[j].substring(1, vals[j].length()-1);
 						
 						if(check)
-							buffer.add_vals(rowid, vals);
+							buffer.value_adds(rowid, vals);
 					 }
 				   }
 				    else
 						continue;
 			}
 
-			buffer.columnName = columnName;
-			buffer.format = new int[columnName.length];
+			buffer.name_of_the_column = name_of_the_column;
+			buffer.b_format = new int[name_of_the_column.length];
 
 		}catch(Exception e){
 			System.out.println("Error at filter");
@@ -361,7 +361,7 @@ public static int searchKeyPage(RandomAccessFile file, int key){
 	}
 
 	
-	public static boolean cmpCheck(String[] values, int rowid, String[] cmp, String[] columnName){
+	public static boolean cmpCheck(String[] values, int rowid, String[] cmp, String[] name_of_the_column){
 
 		boolean check = false;
 		
@@ -370,8 +370,8 @@ public static int searchKeyPage(RandomAccessFile file, int key){
 		}
 		else{
 			int colPos = 1;
-			for(int i = 0; i < columnName.length; i++){
-				if(columnName[i].equals(cmp[0])){
+			for(int i = 0; i < name_of_the_column.length; i++){
+				if(name_of_the_column[i].equals(cmp[0])){
 					colPos = i + 1;
 					break;
 				}
